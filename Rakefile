@@ -174,7 +174,7 @@ vim_plugin_task "local",            "git://github.com/AaronBecker/janus_local.gi
   end
 end
 
-vim_plugin_task "command_t",        "git://github.com/wincent/Command-T.git" do
+vim_plugin_task "command_t",        "git://github.com/AaronBecker/Command-T.git" do
   sh "find ruby -name '.gitignore' | xargs rm"
   Dir.chdir "ruby/command-t" do
     if File.exists?("/usr/bin/ruby1.8") # prefer 1.8 on *.deb systems
