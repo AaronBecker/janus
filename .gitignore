@@ -1,5 +1,6 @@
 .netrwhist
 tmp
+backup
 nerdtree_plugin
 
 after
@@ -15,3 +16,6 @@ ftplugin
 colors
 indent
 .VimballRecord
+
+gvimrc.local
+vimrc.local
