@@ -75,20 +75,25 @@ endfunction
 
 " Project Tree
 autocmd VimEnter * call s:CdIfDirectory(expand("<amatch>"))
-autocmd FocusGained * call s:UpdateNERDTree()
-autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
+let g:janus_nerd_tree = 0
+if g:janus_nerd_tree
+    autocmd FocusGained * call s:UpdateNERDTree()
+    autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
+end
 
 " Close all open buffers on entering a window if the only
 " buffer that's left is the NERDTree buffer
-function s:CloseIfOnlyNerdTreeLeft()
-  if exists("t:NERDTreeBufName")
-    if bufwinnr(t:NERDTreeBufName) != -1
-      if winnr("$") == 1
-        q
-      endif
-    endif
-  endif
-endfunction
+if g:janus_nerd_tree
+    function s:CloseIfOnlyNerdTreeLeft()
+        if exists("t:NERDTreeBufName")
+            if bufwinnr(t:NERDTreeBufName) != -1
+                if winnr("$") == 1
+                    q
+                endif
+            endif
+        endif
+    endfunction
+endif
 
 " If the parameter is a directory, cd into it
 function s:CdIfDirectory(directory)
@@ -106,7 +111,9 @@ function s:CdIfDirectory(directory)
   endif
 
   if directory
-    NERDTree
+      if g:janus_nerd_tree
+          NERDTree
+      endif
     wincmd p
     bd
   endif
@@ -117,6 +124,7 @@ function s:CdIfDirectory(directory)
 endfunction
 
 " NERDTree utility function
+if g:janus_nerd_tree
 function s:UpdateNERDTree(...)
   let stay = 0
 
@@ -219,6 +227,8 @@ call s:DefineCommand("touch", "Touch")
 call s:DefineCommand("rm", "Remove")
 call s:DefineCommand("e", "Edit")
 call s:DefineCommand("mkdir", "Mkdir")
+endif
+
 
 " Include user's local vim config
 if filereadable(expand("~/.gvimrc.local"))
