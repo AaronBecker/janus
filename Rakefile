@@ -1,5 +1,5 @@
 module VIM
-  Dirs = %w[ after autoload doc plugin ruby snippets syntax ftdetect ftplugin colors indent bundle backup]
+  Dirs = %w[ after autoload doc plugin ruby snippets syntax ftdetect ftplugin colors indent ]
 end
 
 directory "tmp"
@@ -42,7 +42,7 @@ def vim_plugin_task(name, repo=nil)
           dirname  = File.basename(filename, '.tar.gz')
 
           sh "tar zxvf tmp/#{filename}"
-          sh "test -r ${dirname} || mv #{dirname} #{dir}"
+          sh "mv #{dirname} #{dir}"
 
         when /vba(\.gz)?$/
           if filename =~ /gz$/
@@ -85,19 +85,6 @@ def vim_plugin_task(name, repo=nil)
       end
 
       task :install => [:pull] + subdirs do
-#<<<<<<< HEAD
-#        if File.exists?(dir) 
-#          Dir.chdir dir do
-#            if File.exists?("Rakefile") and `rake -T` =~ /^rake install/
-#              sh "rake install"
-#            elsif File.exists?("install.sh")
-#              sh "sh install.sh"
-#            else
-#              subdirs.each do |subdir|
-#                if File.exists?(subdir)
-#                  sh "cp -rf #{subdir}/* #{cwd}/#{subdir}/"
-#                end
-#=======
         Dir.chdir dir do
           if File.exists?("Rakefile") and `rake -T` =~ /^rake install/
             sh "rake install"
@@ -107,7 +94,6 @@ def vim_plugin_task(name, repo=nil)
             subdirs.each do |subdir|
               if File.exists?(subdir)
                 sh "cp -RfL #{subdir}/* #{cwd}/#{subdir}/"
-#>>>>>>> upstream/master
               end
             end
           end
@@ -170,31 +156,12 @@ vim_plugin_task "syntastic",        "git://github.com/scrooloose/syntastic.git"
 vim_plugin_task "puppet",           "git://github.com/ajf/puppet-vim.git"
 vim_plugin_task "scala",            "git://github.com/bdd/vim-scala.git"
 vim_plugin_task "gist-vim",         "git://github.com/mattn/gist-vim.git"
-vim_plugin_task "extradite",        "git://github.com/int3/vim-extradite.git"
-vim_plugin_task "gundo",            "git://github.com/sjl/gundo.vim.git"
-vim_plugin_task "pathogen",         "git://github.com/tpope/vim-pathogen.git"
 
-vim_plugin_task "project",          "http://www.vim.org/scripts/download_script.php?src_id=6273" do
-  # Project.vim wants some unique maps that aren't actually unique and error out.
-  sh "sed 's/<unique>//' < plugin/project.vim > project.tmp && mv project.tmp plugin/project.vim"
-end
-
-vim_plugin_task "local",            "git://github.com/AaronBecker/janus_local.git" do
-  sh "cp tmp/local/*.local ."
-  %w[ vimrc.local gvimrc.local ].each do |file|
-    dest = File.expand_path("~/.#{file}")
-    unless File.exist?(dest)
-      ln_s(File.expand_path("../#{file}", __FILE__), dest)
-    end
-  end
-end
-
-vim_plugin_task "command_t",        "git://github.com/AaronBecker/Command-T.git" do
-  sh "find ruby -name '.gitignore' | xargs rm"
 #vim_plugin_task "hammer",           "git://github.com/robgleeson/hammer.vim.git" do
 #  sh "gem install github-markup redcarpet"
 #end
 
+vim_plugin_task "command_t",        "http://s3.wincent.com/command-t/releases/command-t-1.2.1.vba" do
   Dir.chdir "ruby/command-t" do
     if File.exists?("/usr/bin/ruby1.8") # prefer 1.8 on *.deb systems
       sh "/usr/bin/ruby1.8 extconf.rb"
